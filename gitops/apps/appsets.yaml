@@ -1,0 +1,108 @@
+# ApplicationSets discover every directory under each layer and create one
+# Application per component. Add a component by adding a directory; nothing to
+# edit here. Replace crilsen with the real repository owner (see README).
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: infrastructure
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - git:
+        repoURL: https://github.com/crilsen/k8s-homelab.git
+        revision: HEAD
+        directories:
+          - path: gitops/infrastructure/*
+  template:
+    metadata:
+      name: 'infra-{{ .path.basename }}'
+      annotations:
+        argocd.argoproj.io/sync-wave: "0"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/crilsen/k8s-homelab.git
+        targetRevision: HEAD
+        path: '{{ .path.path }}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: infrastructure
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: platform
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - git:
+        repoURL: https://github.com/crilsen/k8s-homelab.git
+        revision: HEAD
+        directories:
+          - path: gitops/platform/*
+  template:
+    metadata:
+      name: 'platform-{{ .path.basename }}'
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/crilsen/k8s-homelab.git
+        targetRevision: HEAD
+        path: '{{ .path.path }}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: platform
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: workloads
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - git:
+        repoURL: https://github.com/crilsen/k8s-homelab.git
+        revision: HEAD
+        directories:
+          - path: gitops/workloads/*
+  template:
+    metadata:
+      name: 'workload-{{ .path.basename }}'
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/crilsen/k8s-homelab.git
+        targetRevision: HEAD
+        path: '{{ .path.path }}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{ .path.basename }}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

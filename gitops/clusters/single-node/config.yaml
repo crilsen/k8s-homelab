@@ -1,0 +1,7 @@
+# Overlay for the single-node topology (inventory/single-node.ini).
+clusterName: single-node
+domain: lab.local
+storageClass: local-path
+controlPlaneCount: 1
+metalLbAddressPool: 192.168.1.240-192.168.1.250
+# Single node: no HA. Workloads are allowed to schedule on the control plane.

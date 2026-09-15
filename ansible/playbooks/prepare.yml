@@ -1,0 +1,13 @@
+---
+# Prepare every node: base packages, kernel modules, sysctl, containerd, and
+# the pinned kubelet/kubeadm/kubectl packages. Safe to re-run (idempotent).
+#
+#   ansible-playbook -i inventory/single-node.ini playbooks/prepare.yml
+#   ansible-playbook -i inventory/lab.ini playbooks/prepare.yml
+
+- name: Prepare all Kubernetes nodes
+  hosts: k8s_cluster
+  roles:
+    - common
+    - container_runtime
+    - kube_packages

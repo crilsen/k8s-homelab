@@ -1,0 +1,26 @@
+---
+# Joins a node to an existing cluster. Requires the first control-plane host to
+# have exposed `kubeadm_worker_join_command` (and, for control-plane joins,
+# `kubeadm_certificate_key`) as facts earlier in the same run.
+
+- name: Check whether this node already belongs to a cluster
+  ansible.builtin.stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: kubeadm_kubelet_conf
+
+- name: Join as a control-plane node
+  ansible.builtin.command:
+    cmd: >-
+      {{ hostvars[groups['k8s_control_plane'][0]].kubeadm_worker_join_command }}
+      --control-plane
+      --certificate-key {{ hostvars[groups['k8s_control_plane'][0]].kubeadm_certificate_key }}
+  when:
+    - not kubeadm_kubelet_conf.stat.exists
+    - kubeadm_join_control_plane | bool
+
+- name: Join as a worker node
+  ansible.builtin.command:
+    cmd: "{{ hostvars[groups['k8s_control_plane'][0]].kubeadm_worker_join_command }}"
+  when:
+    - not kubeadm_kubelet_conf.stat.exists
+    - not kubeadm_join_control_plane | bool

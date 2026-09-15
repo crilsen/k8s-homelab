@@ -1,0 +1,8 @@
+# Overlay for the multi-node / HA topology (inventory/lab.ini).
+clusterName: lab
+domain: lab.local
+storageClass: longhorn
+controlPlaneCount: 3
+metalLbAddressPool: 192.168.1.240-192.168.1.250
+# HA control plane: 3 stacked-etcd nodes behind the kube-vip API endpoint
+# (ansible group_vars: control_plane_endpoint).

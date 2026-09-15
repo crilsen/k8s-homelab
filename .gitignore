@@ -1,0 +1,31 @@
+# OS
+.DS_Store
+
+# Secrets and private keys (never commit)
+*.agekey
+age.key
+*.pem
+*.key
+sops-age-key.txt
+
+# Ansible
+*.retry
+ansible/vars/secrets.yml
+
+# Kubernetes / Helm
+kubeconfig
+*.kubeconfig
+.kube/
+helm-charts/
+charts/*.tgz
+
+# Local tooling
+.venv/
+venv/
+.env
+.env.*
+
+# Editors
+.idea/
+.vscode/
+*.swp

@@ -1,0 +1,36 @@
+---
+# Shared, topology-independent settings. Per-topology values can be overridden
+# in the inventory's [all:vars] or in group_vars for a specific cluster.
+
+# --- Kubernetes ---------------------------------------------------------
+# Pin one supported minor. Supported line (2026-09): 1.37, 1.36, 1.35.
+kubernetes_version: "1.37"
+# Exact Debian package version; verify with `apt-cache madison kubeadm`.
+kubernetes_package_version: "1.37.0-1.1"
+kubernetes_apt_uri: "https://pkgs.k8s.io/core:/stable:/v1.37/deb/"
+kubernetes_apt_suite: "/"
+kubernetes_apt_keyring: "https://pkgs.k8s.io/core:/stable:/v1.37/deb/Release.key"
+
+# --- Cluster networking -------------------------------------------------
+pod_subnet: "10.244.0.0/16"
+service_subnet: "10.96.0.0/12"
+# For HA use the kube-vip VIP; for single-node use the control-plane address.
+control_plane_endpoint: "k8s-api.lab.local:6443"
+
+# --- Container runtime --------------------------------------------------
+containerd_version: ""          # empty = latest containerd.io from Docker's repo
+containerd_systemd_cgroup: true
+
+# --- CNI ----------------------------------------------------------------
+cni_manifest_url: "https://raw.githubusercontent.com/projectcalico/calico/v3.30.0/manifests/calico.yaml"
+calico_mtu: "1440"              # adjust for your fabric/VPN if needed
+
+# --- Node preparation ---------------------------------------------------
+node_disable_swap: true
+node_kernel_modules:
+  - overlay
+  - br_netfilter
+node_sysctl:
+  net.bridge.bridge-nf-call-iptables: 1
+  net.bridge.bridge-nf-call-ip6tables: 1
+  net.ipv4.ip_forward: 1

@@ -1,0 +1,60 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_os_family == "Debian"
+
+- name: Install base packages
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+      - apt-transport-https
+      - jq
+      - nfs-common
+      - open-iscsi
+    state: present
+
+- name: Load required kernel modules
+  community.general.modprobe:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ node_kernel_modules }}"
+
+- name: Persist kernel modules across reboot
+  ansible.builtin.copy:
+    dest: /etc/modules-load.d/k8s.conf
+    mode: "0644"
+    content: |
+      {% for module in node_kernel_modules %}
+      {{ module }}
+      {% endfor %}
+
+- name: Apply Kubernetes sysctl settings
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_file: /etc/sysctl.d/99-kubernetes.conf
+    reload: true
+  loop: "{{ node_sysctl | dict2items }}"
+
+- name: Disable swap immediately
+  ansible.builtin.command: swapoff -a
+  changed_when: false
+  when: node_disable_swap
+  failed_when: false
+
+- name: Disable swap in fstab
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '^([^#].*\sswap\s.*)$'
+    replace: '# \1'
+  when: node_disable_swap
+
+- name: Ensure time synchronization is installed
+  ansible.builtin.apt:
+    name: chrony
+    state: present

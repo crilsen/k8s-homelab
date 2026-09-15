@@ -1,0 +1,58 @@
+---
+- name: Create keyrings directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Add Docker GPG key for the containerd.io repository
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    mode: "0644"
+
+- name: Add Docker repository
+  ansible.builtin.deb822_repository:
+    name: docker
+    types: deb
+    uris: https://download.docker.com/linux/ubuntu
+    suites: "{{ ansible_distribution_release }}"
+    components: [stable]
+    architectures: ["{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}"]
+    signed_by: /etc/apt/keyrings/docker.asc
+    enabled: true
+    state: present
+
+- name: Install containerd
+  ansible.builtin.apt:
+    name: "containerd.io{% if containerd_version %}={{ containerd_version }}{% endif %}"
+    state: present
+    update_cache: true
+  notify: Restart containerd
+
+- name: Ensure containerd is enabled and running
+  ansible.builtin.systemd:
+    name: containerd
+    enabled: true
+    state: started
+
+- name: Generate default containerd config
+  ansible.builtin.command:
+    cmd: containerd config default
+  register: containerd_default_config
+  changed_when: false
+  check_mode: false
+
+- name: Enable SystemdCgroup in containerd config
+  ansible.builtin.copy:
+    dest: /etc/containerd/config.toml
+    mode: "0644"
+    content: "{{ containerd_default_config.stdout | regex_replace('SystemdCgroup = false', 'SystemdCgroup = ' ~ (containerd_systemd_cgroup | lower)) }}"
+  notify: Restart containerd
+
+- name: Configure the sandbox (pause) image for kubelet
+  ansible.builtin.replace:
+    path: /etc/containerd/config.toml
+    regexp: 'sandbox_image = ".*"'
+    replace: 'sandbox_image = "registry.k8s.io/pause:3.10"'
+  notify: Restart containerd

@@ -1,0 +1,23 @@
+---
+# Upgrade the cluster by one minor version. Kubernetes requires sequential minor
+# upgrades (e.g. 1.36 -> 1.37; never skip a minor).
+#
+#   1. Raise `kubernetes_version` and `kubernetes_package_version` in
+#      group_vars/all/main.yml (and the apt repo URL).
+#   2. Drain and upgrade the control plane, then the workers.
+#
+# This is a documented procedure, not a one-shot playbook yet. See
+# docs/runbooks/upgrade-cluster.md for the exact, authorized steps.
+#
+#   ansible-playbook -i inventory/lab.ini playbooks/upgrade.yml --check
+
+- name: Refuse to run without an explicit authorization
+  hosts: k8s_cluster
+  gather_facts: false
+  tasks:
+    - name: Stop until the runbook is followed
+      ansible.builtin.fail:
+        msg: >-
+          Cluster upgrades are disruptive and require explicit authorization.
+          Follow docs/runbooks/upgrade-cluster.md and run the documented commands
+          there instead of this placeholder playbook.

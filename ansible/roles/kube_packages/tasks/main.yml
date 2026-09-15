@@ -1,0 +1,48 @@
+---
+- name: Download the Kubernetes signing key (ASCII armored)
+  ansible.builtin.get_url:
+    url: "{{ kubernetes_apt_keyring }}"
+    dest: /etc/apt/keyrings/kubernetes-apt-release.asc
+    mode: "0644"
+    force: false
+
+- name: Dearmor the Kubernetes signing key
+  ansible.builtin.command:
+    cmd: gpg --dearmor --yes -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /etc/apt/keyrings/kubernetes-apt-release.asc
+    creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+- name: Add Kubernetes repository
+  ansible.builtin.deb822_repository:
+    name: kubernetes
+    types: deb
+    uris: "{{ kubernetes_apt_uri }}"
+    suites: "{{ kubernetes_apt_suite }}"
+    signed_by: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    enabled: true
+    state: present
+
+- name: Install kubelet, kubeadm and kubectl
+  ansible.builtin.apt:
+    name:
+      - "kubelet={{ kubernetes_package_version }}"
+      - "kubeadm={{ kubernetes_package_version }}"
+      - "kubectl={{ kubernetes_package_version }}"
+    state: present
+
+- name: Hold Kubernetes packages at the pinned version
+  ansible.builtin.dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  loop:
+    - kubelet
+    - kubeadm
+    - kubectl
+
+- name: Prevent unattended upgrades from touching Kubernetes packages
+  ansible.builtin.copy:
+    dest: /etc/apt/preferences.d/kubernetes
+    mode: "0644"
+    content: |
+      Package: kubelet kubeadm kubectl
+      Pin: version {{ kubernetes_package_version }}
+      Pin-Priority: 1001

@@ -1,0 +1,39 @@
+---
+# Add nodes to an existing cluster (new hosts in k8s_workers or
+# k8s_control_plane). Run playbooks/prepare.yml on the new hosts first.
+#
+#   ansible-playbook -i inventory/lab.ini playbooks/join.yml --limit k8s-w-3
+
+- name: Mint a fresh join command on the first control-plane node
+  hosts: k8s_control_plane[0]
+  tasks:
+    - name: Create a worker join command
+      ansible.builtin.command:
+        cmd: kubeadm token create --print-join-command
+      register: kubeadm_worker_join
+      changed_when: false
+
+    - name: Create an upload-certs key for control-plane joins
+      ansible.builtin.command:
+        cmd: kubeadm init phase upload-certs --upload-certs
+      register: kubeadm_upload_certs
+      changed_when: false
+
+    - name: Expose join data to the following plays
+      ansible.builtin.set_fact:
+        kubeadm_worker_join_command: "{{ kubeadm_worker_join.stdout }}"
+        kubeadm_certificate_key: "{{ kubeadm_upload_certs.stdout_lines[-1] }}"
+
+- name: Join new control-plane nodes
+  hosts: k8s_control_plane[1:]
+  roles:
+    - role: kubeadm_join
+      vars:
+        kubeadm_join_control_plane: true
+
+- name: Join new worker nodes
+  hosts: k8s_workers
+  roles:
+    - role: kubeadm_join
+      vars:
+        kubeadm_join_control_plane: false

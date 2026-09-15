@@ -1,0 +1,45 @@
+---
+# Bring up a new cluster: initialize the first control plane, join the remaining
+# control-plane nodes (if any), then join the workers.
+#
+#   ansible-playbook -i inventory/single-node.ini playbooks/cluster-init.yml
+#   ansible-playbook -i inventory/lab.ini playbooks/cluster-init.yml
+#
+# Run playbooks/prepare.yml on every node first. The cluster is NotReady until
+# the CNI is applied by bootstrap/install.sh.
+
+- name: Initialize the first control-plane node
+  hosts: k8s_control_plane[0]
+  roles:
+    - kubeadm_control_plane
+  post_tasks:
+    - name: Create a worker join command
+      ansible.builtin.command:
+        cmd: kubeadm token create --print-join-command
+      register: kubeadm_worker_join
+      changed_when: false
+
+    - name: Create an upload-certs key for control-plane joins
+      ansible.builtin.command:
+        cmd: kubeadm init phase upload-certs --upload-certs
+      register: kubeadm_upload_certs
+      changed_when: false
+
+    - name: Expose join data to the following plays
+      ansible.builtin.set_fact:
+        kubeadm_worker_join_command: "{{ kubeadm_worker_join.stdout }}"
+        kubeadm_certificate_key: "{{ kubeadm_upload_certs.stdout_lines[-1] }}"
+
+- name: Join the remaining control-plane nodes
+  hosts: k8s_control_plane[1:]
+  roles:
+    - role: kubeadm_join
+      vars:
+        kubeadm_join_control_plane: true
+
+- name: Join the worker nodes
+  hosts: k8s_workers
+  roles:
+    - role: kubeadm_join
+      vars:
+        kubeadm_join_control_plane: false
