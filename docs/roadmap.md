@@ -18,6 +18,9 @@ phase until the previous one is accepted.
 ## Fase 2 — Baseline
 
 - MetalLB (L2 pool), ingress-nginx, cert-manager, storage class, internal DNS.
+- Manifests for MetalLB, ingress-nginx, cert-manager and local-path are **written
+  and pinned** (`gitops/infrastructure/`), but not yet applied or validated.
+- Remaining: internal DNS component.
 - **Acceptance:** a test app is reachable over HTTPS at `app.<domain>` via a MetalLB address.
 
 ## Fase 3 — GitOps
@@ -29,6 +32,8 @@ phase until the previous one is accepted.
 ## Fase 4 — Platform
 
 - metrics-server, kube-prometheus-stack + Loki, Velero + etcd snapshots.
+- metrics-server and kube-prometheus-stack manifests are **written and pinned**
+  (`gitops/platform/`). Loki and Velero remain to be added.
 - **Acceptance:** cluster/node dashboards; a scheduled backup and a **tested restore**.
 
 ## Fase 5 — Workloads

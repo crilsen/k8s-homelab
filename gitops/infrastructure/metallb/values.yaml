@@ -1,0 +1,14 @@
+# MetalLB Helm values.
+# The address range and L2 advertisement are declared in addresspool.yaml so the
+# pool can be changed without touching the chart values.
+#
+# Speaker must be able to bind the pool addresses on the L2 segment (they must be
+# free on your LAN). Keep them outside your DHCP range.
+speaker:
+  frr:
+    enabled: false
+  # Tolerate running on a single control-plane node.
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      effect: NoSchedule
+      operator: Exists

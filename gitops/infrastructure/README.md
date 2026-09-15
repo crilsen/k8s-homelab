@@ -1,15 +1,27 @@
 # infrastructure
 
-Cluster-wide plumbing. Each subdirectory becomes its own Argo CD Application (wave 0/1).
+Cluster-wide plumbing. Each subdirectory becomes its own Argo CD Application.
 
-| Directory | Component | Wave | Notes |
-| --- | --- | --- | --- |
-| `metallb/` | MetalLB | 0 | L2 address pool from the cluster overlay |
-| `cert-manager/` | cert-manager | 0 | Internal CA or Let's Encrypt DNS-01 |
-| `local-path/` | local-path-provisioner | 1 | Single-node storage |
-| `longhorn/` | Longhorn | 1 | Multi-node replicated storage |
-| `ingress-nginx/` | ingress-nginx | 1 | IngressClass `nginx` |
-| `dns/` | internal DNS | 1 | Wildcard `*.<domain>` to the MetalLB VIP |
+| Directory | Component | Chart / source | Version | Status |
+| --- | --- | --- | --- | --- |
+| `metallb/` | MetalLB + LAN address pool | `metallb/metallb` | 0.16.1 | ready |
+| `cert-manager/` | cert-manager + self-signed `ClusterIssuer` | `jetstack/cert-manager` | v1.21.2 | ready |
+| `ingress-nginx/` | ingress-nginx (default IngressClass) | `ingress-nginx/ingress-nginx` | 4.15.1 | ready |
+| `local-path/` | local-path-provisioner (default StorageClass) | vendored manifest v0.0.37 | — | ready |
 
-Only create a directory once you add its manifests; an empty directory produces an empty Application.
-Storage is an either/or choice driven by the cluster overlay (`storageClass`).
+Components are rendered with kustomize `helmCharts` (Argo CD runs kustomize with
+`--enable-helm`, set on each Application in `gitops/apps/appsets.yaml`).
+
+## Not yet implemented
+
+- `dns/` — internal DNS wildcard (`*.<domain>`) to the MetalLB address. Needs a
+  LAN DNS server; decide approach (CoreDNS/ExternalDNS vs router) first.
+- `longhorn/` — replicated storage for >=3 nodes. Use instead of `local-path`
+  once a third node exists; switch `storageClass` in the cluster overlay.
+
+## Notes
+
+- The MetalLB pool (`metallb/addresspool.yaml`) must match the cluster overlay's
+  `metalLbAddressPool`.
+- Resources that need a CRD installed by the same Application use
+  `argocd.argoproj.io/sync-wave: "1"` so the CRDs exist first.

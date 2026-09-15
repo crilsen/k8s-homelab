@@ -1,0 +1,48 @@
+# kube-prometheus-stack Helm values, kept small for a homelab.
+# Grafana admin password: set via an existing secret before this is used in
+# anger (see platform/secrets, blocked on ADR-008). Until then the chart's
+# generated password applies; read it with:
+#   kubectl -n monitoring get secret kube-prometheus-stack-grafana \
+#     -o jsonpath='{.data.admin-password}' | base64 -d
+grafana:
+  enabled: true
+  defaultDashboardsEnabled: true
+  persistence:
+    enabled: false
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      effect: NoSchedule
+      operator: Exists
+
+prometheus:
+  prometheusSpec:
+    retention: 7d
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
+        operator: Exists
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
+        operator: Exists
+
+# Only scrape the ServiceMonitors/PodMonitors this cluster actually has.
+prometheus-node-exporter:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      effect: NoSchedule
+      operator: Exists
+
+kube-state-metrics:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      effect: NoSchedule
+      operator: Exists

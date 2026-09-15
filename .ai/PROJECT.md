@@ -5,7 +5,7 @@
 - **Name:** k8s-homelab
 - **Objective:** A reproducible, declaratively managed Kubernetes homelab that runs on a single machine or on N machines with the same codebase, and doubles as a study lab for Kubernetes certifications (CKA, CKAD, CKS).
 - **Repository purpose:** Hold host provisioning (Ansible), upstream Kubernetes bootstrap (kubeadm), and GitOps desired state (Argo CD), plus runbooks.
-- **Status:** Adopted. Fase 0 (context + skeleton + docs) in progress; no cluster provisioned yet.
+- **Status:** Adopted. Fase 0 done and published. Fase 2 baseline + observability components are written and version-pinned, but nothing has been applied or validated against a cluster (no hosts yet).
 
 ## Observed
 

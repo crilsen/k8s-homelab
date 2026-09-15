@@ -1,0 +1,28 @@
+# ingress-nginx Helm values.
+# The Service is type LoadBalancer; MetalLB assigns an address from the pool in
+# gitops/infrastructure/metallb/addresspool.yaml.
+controller:
+  ingressClassResource:
+    name: nginx
+    default: true
+  service:
+    type: LoadBalancer
+    externalTrafficPolicy: Local
+  metrics:
+    enabled: true
+    # Enable the ServiceMonitor only after kube-prometheus-stack (platform, wave 2)
+    # has installed the Prometheus Operator CRDs.
+    serviceMonitor:
+      enabled: false
+  # Allow scheduling on a single control-plane node.
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      effect: NoSchedule
+      operator: Exists
+  admissionWebhooks:
+    enabled: true
+  # Keep resources modest for a homelab.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi

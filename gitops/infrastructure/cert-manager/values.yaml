@@ -1,0 +1,30 @@
+# cert-manager Helm values.
+# CRDs are installed by the chart (crds.enabled) so the ClusterIssuer below can
+# be created in the same Application.
+crds:
+  enabled: true
+
+# Single/small homelab: run the controllers with modest resources and tolerate
+# the control-plane taint so they start on a one-node cluster too.
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    effect: NoSchedule
+    operator: Exists
+
+webhook:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      effect: NoSchedule
+      operator: Exists
+
+cainjector:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      effect: NoSchedule
+      operator: Exists
+
+startupapicheck:
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      effect: NoSchedule
+      operator: Exists

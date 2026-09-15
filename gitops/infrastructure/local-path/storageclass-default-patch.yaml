@@ -1,0 +1,8 @@
+# Mark local-path as the default StorageClass so PVCs without a class bind here.
+# Strategic merge: only the annotation is added to the vendored StorageClass.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-path
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"

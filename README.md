@@ -21,15 +21,32 @@ docs/       architecture, roadmap, runbooks, certification map
 .ai/        portable agent context (source of truth: AGENTS.md)
 ```
 
+## Components
+
+Argo CD reconciles `gitops/`. Each component is a directory rendered with
+kustomize `helmCharts` (`--enable-helm`). Chart versions are pinned.
+
+| Layer | Component | Version |
+| --- | --- | --- |
+| infrastructure | MetalLB (+ LAN address pool) | 0.16.1 |
+| infrastructure | cert-manager (+ self-signed ClusterIssuer) | v1.21.2 |
+| infrastructure | ingress-nginx | 4.15.1 |
+| infrastructure | local-path-provisioner (default StorageClass) | v0.0.37 |
+| platform | metrics-server | 3.14.0 |
+| platform | kube-prometheus-stack | 91.4.0 |
+
+Pending: internal DNS, Longhorn (needs >=3 nodes), Loki, Velero, secret
+management (ADR-008). See the `README.md` in each layer.
+
 ## Quickstart (once hosts exist)
 
 ```bash
 # 1. Prepare hosts and build the cluster
-ansible-playbook -i ansible/inventory/single-node.ini ansible/playbooks/prepare.yml
-ansible-playbook -i ansible/inventory/single-node.ini ansible/playbooks/cluster-init.yml
+ansible-playbook -i ansible/inventory/lab.ini ansible/playbooks/prepare.yml
+ansible-playbook -i ansible/inventory/lab.ini ansible/playbooks/cluster-init.yml
 
 # 2. Bootstrap CNI + Argo CD, then let GitOps take over
-./bootstrap/install.sh
+GITOPS_REPO_URL=https://github.com/crilsen/k8s-homelab.git ./bootstrap/install.sh
 
 # 3. Verify
 kubectl get nodes
@@ -40,11 +57,13 @@ See `docs/bootstrap.md` for details and `docs/roadmap.md` for the phased plan.
 
 ## Status
 
-Skeleton and documentation only. No cluster has been provisioned yet. This directory is not yet a Git repository.
+The code (Ansible + GitOps manifests + docs) is in place, but **nothing has been
+run against a cluster**: it is not validated end to end. No cluster exists yet
+(the two target hosts are not up). The MetalLB pool and addresses are set for the
+`192.168.0.0/24` LAN; adjust if your network differs.
 
-## Assumptions to confirm before first build
+## Open items
 
-- Host inventory (addresses, users, SSH keys).
-- Internal domain and MetalLB address pool.
-- Whether the first build enables an HA control plane (3 nodes + API VIP).
-- Secret-management mechanism (see `.ai/DECISIONS.md`, ADR-008).
+- Internal domain (default `lab.local`) and LAN DNS approach.
+- Secret-management mechanism (ADR-008).
+- Validation against real hardware.

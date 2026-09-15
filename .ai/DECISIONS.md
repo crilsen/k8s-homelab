@@ -164,6 +164,34 @@ Consequences:
 - Longhorn is deferred until a third node is available (needs >=3 for a healthy replica count).
 - Growing to HA = add two control-plane hosts + a kube-vip VIP and point `control_plane_endpoint` at it.
 
+## ADR-010 — Deliver components as kustomize directories with `helmCharts`
+
+Status: Accepted
+
+Context:
+GitOps components must be version-pinned, reviewable, and allow custom resources
+(CRs) next to the chart that installs their CRDs, while staying uniform so the
+ApplicationSets need no per-component metadata.
+
+Decision:
+Each component is a directory with a `kustomization.yaml` that renders its Helm
+chart via `helmCharts` (with `valuesFile`) and lists any extra manifests under
+`resources`. Argo CD runs kustomize with `--enable-helm`, set per Application in
+`gitops/apps/appsets.yaml` (`source.kustomize.buildOptions`). CRs that depend on
+chart CRDs carry `argocd.argoproj.io/sync-wave: "1"` so the CRDs apply first.
+`local-path-provisioner` (no usable Helm repo) is vendored as a pinned manifest.
+
+Reasoning:
+Keeps one uniform pattern discoverable by the ApplicationSets' directory
+generator, avoids Application-level chart metadata, and lets a single Application
+install a chart and its CRs in the right order.
+
+Consequences:
+- Argo CD's repo-server must have `helm` available (the default image does).
+- Chart versions live in `kustomization.yaml`; Renovate coverage for
+  `helmCharts` is not guaranteed, so bump versions manually or verify Renovate.
+- Vendored manifests (local-path) must be refreshed by hand on upgrade.
+
 Use this ADR format for durable, meaningful decisions:
 
 ```text

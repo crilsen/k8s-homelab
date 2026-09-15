@@ -1,0 +1,13 @@
+# metrics-server Helm values.
+# kubeadm's default serving certificate is self-signed and the kubelet
+# certificate has no SAN for the node name, so TLS verification is disabled here
+# (common for kubeadm homelabs). Replace with proper serving certs later.
+args:
+  - --kubelet-insecure-tls
+  - --kubelet-preferred-address-types=InternalIP
+
+# Allow scheduling on a single control-plane node.
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    effect: NoSchedule
+    operator: Exists

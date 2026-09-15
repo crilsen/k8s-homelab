@@ -1,0 +1,15 @@
+# A self-signed issuer is the zero-dependency default for a homelab, so TLS
+# works out of the box. Browsers will not trust it.
+#
+# To use Let's Encrypt with DNS-01 later, add a ClusterIssuer that references a
+# DNS provider secret (see the cert-manager docs) and point Ingresses at it.
+# Self-signed certs also need a CA to be useful for internal services; add a
+# `ca` issuer once the secret-management approach is decided (ADR-008).
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  selfSigned: {}
