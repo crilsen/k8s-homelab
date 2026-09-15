@@ -2,12 +2,12 @@
 
 ## Resume block (read first)
 
-- Repo state: **not a Git repository** (no `.git` here or in any parent). Branch/HEAD: none. Working tree: n/a.
+- Repo state: branch `main`, tracking `origin/main` (`https://github.com/crilsen/k8s-homelab`, public). Working tree clean.
 - Source of truth: `AGENTS.md` → `.ai/`
 - Budget / usage observed: unknown
 - Checkpoint updated: 2026-09-15
-- Last goal: Adopt the context for `k8s-homelab` and create the repository skeleton + docs (Fase 0).
-- Exact next action: run `git init` (and set the remote), then commit Fase 0. Before touching hosts, confirm the inventory (addresses, SSH user/key), internal domain, MetalLB pool, and whether the first build enables an HA control plane.
+- Last goal: Fase 0 — adopt the context, create the skeleton + docs, and publish the repo.
+- Exact next action: start Fase 1. Confirm the inventory (IPs, SSH user/key), internal domain, MetalLB pool, and whether the first build is HA; replace the placeholder addresses in `ansible/inventory/*.ini`, then run `prepare.yml` and `cluster-init.yml`.
 - Blocked by: inventory/domain/MetalLB values unknown; secret-management decision deferred (ADR-008).
 - Resume prompt: `Read AGENTS.md and .ai/HANDOFF.md. Continue from the Resume block. Do not rediscover context.`
 
@@ -18,10 +18,10 @@ one codebase, is maintained declaratively, and doubles as a CKA/CKAD/CKS lab.
 
 ## Current State
 
-Fase 0 complete: the `.ai/` context is adopted with real facts, and the repo
-skeleton exists (`ansible/`, `bootstrap/`, `gitops/`, `docs/`, `README.md`,
-`.gitignore`). No cluster is provisioned and no hosts are configured. The
-directory is not yet a Git repository.
+Fase 0 complete: the `.ai/` context is adopted with real facts, the repo skeleton
+exists (`ansible/`, `bootstrap/`, `gitops/`, `docs/`, `README.md`, `.gitignore`),
+and it is published at `github.com/crilsen/k8s-homelab` (branch `main`). No
+cluster is provisioned and no hosts are configured.
 
 ## What Was Done
 

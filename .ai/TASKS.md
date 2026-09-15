@@ -2,7 +2,7 @@
 
 ## Active
 
-- Fase 0 (foundation): context adopted, skeleton and docs created. Pending `git init` and first commit.
+- Fase 0 (foundation): done and published at `crilsen/k8s-homelab` (branch `main`).
 
 ## Planned
 
@@ -14,10 +14,10 @@
 
 - Real inventory (addresses, SSH user/key), internal domain, and MetalLB pool are unknown.
 - Secret-management mechanism deferred (ADR-008) — blocks the first secret-bearing workload.
-- Nothing can be committed until the directory is a Git repository.
 
 ## Completed
 
 - Adopted the portable context with real facts (PROJECT, ARCHITECTURE, CONVENTIONS, DECISIONS, TOOLS, VALIDATION).
 - Created the repository skeleton: `ansible/` (inventory, group_vars, playbooks, roles), `bootstrap/`, `gitops/` (apps, layers, clusters), `docs/`.
 - Documented architecture, roadmap, bootstrap, runbooks (add-node, upgrade, restore-etcd, break-glass), and certification track.
+- Initialized Git (`main`), created the public repo `crilsen/k8s-homelab`, and pushed the initial commit.
