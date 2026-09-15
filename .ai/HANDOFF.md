@@ -2,7 +2,7 @@
 
 ## Resume block (read first)
 
-- Repo state: branch `main`, tracking `origin/main` (`https://github.com/crilsen/k8s-homelab`, public). Working tree clean.
+- Repo state: branch `dev`, tracking `origin/dev` (`https://github.com/crilsen/k8s-homelab`, public). Working tree clean.
 - Source of truth: `AGENTS.md` → `.ai/`
 - Budget / usage observed: unknown
 - Checkpoint updated: 2026-09-15
@@ -20,7 +20,7 @@ one codebase, is maintained declaratively, and doubles as a CKA/CKAD/CKS lab.
 
 Fase 0 complete: the `.ai/` context is adopted with real facts, the repo skeleton
 exists (`ansible/`, `bootstrap/`, `gitops/`, `docs/`, `README.md`, `.gitignore`),
-and it is published at `github.com/crilsen/k8s-homelab` (branch `main`). No
+and it is published at `github.com/crilsen/k8s-homelab` (branch `dev`). No
 cluster is provisioned and no hosts are configured.
 
 ## What Was Done

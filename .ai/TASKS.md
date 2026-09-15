@@ -2,7 +2,7 @@
 
 ## Active
 
-- Fase 0 (foundation): done and published at `crilsen/k8s-homelab` (branch `main`).
+- Fase 0 (foundation): done and published at `crilsen/k8s-homelab` (branch `dev`).
 
 ## Planned
 
@@ -20,4 +20,4 @@
 - Adopted the portable context with real facts (PROJECT, ARCHITECTURE, CONVENTIONS, DECISIONS, TOOLS, VALIDATION).
 - Created the repository skeleton: `ansible/` (inventory, group_vars, playbooks, roles), `bootstrap/`, `gitops/` (apps, layers, clusters), `docs/`.
 - Documented architecture, roadmap, bootstrap, runbooks (add-node, upgrade, restore-etcd, break-glass), and certification track.
-- Initialized Git (`main`), created the public repo `crilsen/k8s-homelab`, and pushed the initial commit.
+- Initialized Git (`dev`), created the public repo `crilsen/k8s-homelab`, and pushed the initial commit.
