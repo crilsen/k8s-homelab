@@ -140,6 +140,30 @@ Consequences:
 - Any secret-bearing app is blocked on this decision.
 - Revisit before Fase 3 (GitOps) is considered complete.
 
+## ADR-009 — Start with a two-node topology
+
+Status: Accepted
+
+Context:
+The homelab budget/hardware starts small but must grow without rework. A single
+node is a single point of failure and cannot exercise HA; an even number of
+control-plane nodes breaks etcd quorum.
+
+Decision:
+Begin with 1 control plane (`192.168.0.201`) + 1 worker (`192.168.0.202`) using
+`ansible/inventory/lab.ini`. Keep `.203` as a commented third node. Use
+`storageClass: local-path` until a third node exists, then switch the overlay to
+Longhorn. `single-node.ini` remains supported for a one-machine build.
+
+Reasoning:
+Two nodes add a real worker without the quorum problems of two control planes,
+and moving later is a data change (inventory + overlay), not a code change.
+
+Consequences:
+- No HA control plane yet; the API server and etcd live on `.201`.
+- Longhorn is deferred until a third node is available (needs >=3 for a healthy replica count).
+- Growing to HA = add two control-plane hosts + a kube-vip VIP and point `control_plane_endpoint` at it.
+
 Use this ADR format for durable, meaningful decisions:
 
 ```text

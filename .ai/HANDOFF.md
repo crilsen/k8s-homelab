@@ -6,9 +6,9 @@
 - Source of truth: `AGENTS.md` → `.ai/`
 - Budget / usage observed: unknown
 - Checkpoint updated: 2026-09-15
-- Last goal: Fase 0 — adopt the context, create the skeleton + docs, and publish the repo.
-- Exact next action: start Fase 1. Confirm the inventory (IPs, SSH user/key), internal domain, MetalLB pool, and whether the first build is HA; replace the placeholder addresses in `ansible/inventory/*.ini`, then run `prepare.yml` and `cluster-init.yml`.
-- Blocked by: inventory/domain/MetalLB values unknown; secret-management decision deferred (ADR-008).
+- Last goal: Fase 1 setup — record the confirmed topology and inventory.
+- Exact next action: once `192.168.0.201/.202` are reachable over SSH, run `ansible-playbook -i ansible/inventory/lab.ini ansible/playbooks/prepare.yml --check`, then without `--check`, then `cluster-init.yml`, then `GITOPS_REPO_URL=https://github.com/crilsen/k8s-homelab.git ./bootstrap/install.sh`.
+- Blocked by: hosts unreachable (no ICMP, port 22 closed on 192.168.0.201/.202 as of 2026-09-15). Internal domain and secret management (ADR-008) still open.
 - Resume prompt: `Read AGENTS.md and .ai/HANDOFF.md. Continue from the Resume block. Do not rediscover context.`
 
 ## Goal
@@ -18,10 +18,12 @@ one codebase, is maintained declaratively, and doubles as a CKA/CKAD/CKS lab.
 
 ## Current State
 
-Fase 0 complete: the `.ai/` context is adopted with real facts, the repo skeleton
-exists (`ansible/`, `bootstrap/`, `gitops/`, `docs/`, `README.md`, `.gitignore`),
-and it is published at `github.com/crilsen/k8s-homelab` (branch `dev`). No
-cluster is provisioned and no hosts are configured.
+Fase 0 complete and published at `github.com/crilsen/k8s-homelab` (branch `dev`).
+Fase 1 inventory confirmed: two-node topology (1 control plane `192.168.0.201`,
+1 worker `192.168.0.202`, `.203` reserved), Ubuntu with user `ubuntu` and key
+`~/.ssh/id_ed25519`, pod/service `10.244.0.0/16` / `10.96.0.0/12`, MetalLB
+`192.168.0.240-192.168.0.250`, storage `local-path`. The hosts are **not
+reachable yet**, so nothing has been provisioned or validated against them.
 
 ## What Was Done
 

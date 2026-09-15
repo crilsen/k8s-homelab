@@ -2,7 +2,7 @@
 
 ## Active
 
-- Fase 0 (foundation): done and published at `crilsen/k8s-homelab` (branch `dev`).
+- Fase 1 (nodes): topology confirmed (1 CP `192.168.0.201` + 1 worker `192.168.0.202`, Ubuntu, user `ubuntu`, key `~/.ssh/id_ed25519`). **Blocked:** both hosts are unreachable (no ICMP, port 22 closed) as of 2026-09-15; nothing provisioned yet.
 
 ## Planned
 
@@ -12,8 +12,8 @@
 
 ## Blocked
 
-- Real inventory (addresses, SSH user/key), internal domain, and MetalLB pool are unknown.
-- Secret-management mechanism deferred (ADR-008) — blocks the first secret-bearing workload.
+- Hosts `192.168.0.201/.202` are not reachable (not powered on / not created yet).
+- Internal domain (default `lab.local`) and secret-management mechanism (ADR-008) still open.
 
 ## Completed
 
