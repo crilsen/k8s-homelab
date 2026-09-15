@@ -14,8 +14,9 @@ kubernetes_apt_keyring: "https://pkgs.k8s.io/core:/stable:/v1.37/deb/Release.key
 # --- Cluster networking -------------------------------------------------
 pod_subnet: "10.244.0.0/16"
 service_subnet: "10.96.0.0/12"
-# For HA use the kube-vip VIP; for single-node use the control-plane address.
-control_plane_endpoint: "k8s-api.lab.local:6443"
+# Single control-plane (single-node and current lab): the node's own address.
+# For an HA control plane, set this to the kube-vip VIP instead.
+control_plane_endpoint: "192.168.0.201:6443"
 
 # --- Container runtime --------------------------------------------------
 containerd_version: ""          # empty = latest containerd.io from Docker's repo
