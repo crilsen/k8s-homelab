@@ -1,9 +1,11 @@
-# Overlay for the multi-node topology (inventory/lab.ini).
+# Overlay for the two-node topology (inventory/lab.ini).
 clusterName: lab
 domain: lab.local
-storageClass: longhorn
+storageClass: local-path
 controlPlaneCount: 1
 metalLbAddressPool: 192.168.0.240-192.168.0.250
-# 1 control plane (192.168.0.201) + 2 workers (192.168.0.202/.203).
-# To move to an HA control plane later, add two more control-plane hosts and
-# point control_plane_endpoint at a kube-vip VIP.
+# 1 control plane (192.168.0.201) + 1 worker (192.168.0.202).
+# storageClass is local-path because Longhorn wants >=3 nodes for a healthy
+# replica count; switch to longhorn once a third node is added.
+# To reach an HA control plane later, add two more control-plane hosts and point
+# control_plane_endpoint at a kube-vip VIP.
