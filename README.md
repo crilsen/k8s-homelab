@@ -1,6 +1,6 @@
 # k8s-homelab
 
-> **Status: under construction (em construção).** The skeleton and docs exist, but
+> **Status: under construction.** The skeleton and docs exist, but
 > no cluster has been provisioned yet and the manifests are not finished. Do not
 > rely on this repository as a working deployment yet.
 
