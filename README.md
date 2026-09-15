@@ -1,5 +1,9 @@
 # k8s-homelab
 
+> **Status: under construction (em construção).** The skeleton and docs exist, but
+> no cluster has been provisioned yet and the manifests are not finished. Do not
+> rely on this repository as a working deployment yet.
+
 Reproducible Kubernetes homelab that runs on **one machine or N machines** from the same codebase, managed declaratively, and usable as a study lab for **CKA / CKAD / CKS**.
 
 - **Kubernetes:** upstream via `kubeadm` (containerd runtime), pinned to a supported minor version.
