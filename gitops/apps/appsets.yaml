@@ -16,6 +16,9 @@ spec:
         revision: HEAD
         directories:
           - path: gitops/infrastructure/*
+          # Directories prefixed with "_" are placeholders, not reconciled.
+          - path: gitops/infrastructure/_*
+            exclude: true
   template:
     metadata:
       name: 'infra-{{ .path.basename }}'
@@ -54,6 +57,8 @@ spec:
         revision: HEAD
         directories:
           - path: gitops/platform/*
+          - path: gitops/platform/_*
+            exclude: true
   template:
     metadata:
       name: 'platform-{{ .path.basename }}'
@@ -92,6 +97,8 @@ spec:
         revision: HEAD
         directories:
           - path: gitops/workloads/*
+          - path: gitops/workloads/_*
+            exclude: true
   template:
     metadata:
       name: 'workload-{{ .path.basename }}'

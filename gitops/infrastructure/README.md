@@ -12,12 +12,15 @@ Cluster-wide plumbing. Each subdirectory becomes its own Argo CD Application.
 Components are rendered with kustomize `helmCharts` (Argo CD runs kustomize with
 `--enable-helm`, set on each Application in `gitops/apps/appsets.yaml`).
 
-## Not yet implemented
+## Placeholders (not reconciled)
 
-- `dns/` — internal DNS wildcard (`*.<domain>`) to the MetalLB address. Needs a
-  LAN DNS server; decide approach (CoreDNS/ExternalDNS vs router) first.
-- `longhorn/` — replicated storage for >=3 nodes. Use instead of `local-path`
-  once a third node exists; switch `storageClass` in the cluster overlay.
+Directories prefixed with `_` are ignored by the ApplicationSet (see the exclude
+rule in `gitops/apps/appsets.yaml`). Rename to drop the `_` to activate one.
+
+- `_dns/` — internal DNS wildcard (`*.<domain>`) to the MetalLB address. Needs a
+  LAN DNS decision (CoreDNS zone / ExternalDNS / router).
+- `_longhorn/` — replicated storage for >=3 nodes, to replace `local-path`.
+  `kustomization.yaml` + `values.yaml` are ready; review before enabling.
 
 ## Notes
 

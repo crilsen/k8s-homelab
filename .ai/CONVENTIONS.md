@@ -31,6 +31,7 @@
 - Pin chart versions; never use `latest`.
 - Set `resources` requests/limits, probes, and security contexts on every workload.
 - One Application per component; use ApplicationSets for per-cluster fan-out.
+- Component directories prefixed with `_` are placeholders and are excluded from the ApplicationSets (`exclude: true`); rename to drop the `_` to activate. Never leave an empty component directory that the generator would pick up.
 - Ordered bring-up with Argo CD sync waves (`argocd.argoproj.io/sync-wave`).
 - No manual `kubectl apply` against the live cluster except documented bootstrap and break-glass steps.
 

@@ -28,11 +28,12 @@ kustomize `helmCharts` (`--enable-helm`). Chart versions are pinned.
 Also ready: Ansible provisioning (`ansible/`), the one-time bootstrap
 (`bootstrap/`), and the runbooks (`docs/runbooks/`).
 
-## Not included yet
+## Pending (as placeholders)
 
-Internal DNS, Longhorn (needs >=3 nodes for a healthy replica count), Loki,
-Velero, and secret management (see `.ai/DECISIONS.md`, ADR-008). See the
-`README.md` inside each layer under `gitops/`.
+Internal DNS, Longhorn, Loki, Velero, and secret management are stubbed as
+`_`-prefixed directories under `gitops/` and are **ignored** by Argo CD. Rename a
+directory to drop the `_` to activate it. See each layer's `README.md` and
+`.ai/DECISIONS.md` (ADR-008).
 
 ## Repository layout
 

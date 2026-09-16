@@ -22,3 +22,4 @@
 - Documented architecture, roadmap, bootstrap, runbooks (add-node, upgrade, restore-etcd, break-glass), and certification track.
 - Initialized Git (`dev`), created the public repo `crilsen/k8s-homelab`, and pushed the initial commit.
 - Implemented GitOps components (code ready, not applied): infrastructure = MetalLB 0.16.1 (+ pool), cert-manager v1.21.2 (+ self-signed issuer), ingress-nginx 4.15.1, local-path v0.0.37; platform = metrics-server 3.14.0, kube-prometheus-stack 91.4.0. ApplicationSets render them via kustomize `helmCharts` with `--enable-helm` (ADR-010).
+- Added `_`-prefixed placeholders (excluded from the ApplicationSets): `_dns`, `_longhorn`, `_loki` (chart values ready), `_velero`, `_secrets` (decision-blocked). Rename to activate.
