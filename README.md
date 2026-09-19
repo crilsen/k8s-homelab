@@ -71,6 +71,17 @@ kubectl -n argocd get applications
 
 See `docs/bootstrap.md` for details and `docs/roadmap.md` for the phased plan.
 
+## Contributing
+
+This project is **open to collaboration** — contributions of any size are
+welcome: new components, runbooks, bug fixes, or docs.
+
+- Open an issue to discuss an idea or report a problem.
+- Branch off `dev` (the default branch) and open a pull request against `dev`.
+- Keep changes small and follow the conventions in `.ai/CONVENTIONS.md`.
+- Pin chart and image versions; never commit secrets (see ADR-008).
+- State clearly in the PR what you could and could not validate.
+
 ## Validation status
 
 - YAML parse of all manifests: validated.
